@@ -1,0 +1,7 @@
+.kapital{
+	text-transform: uppercase;
+}
+
+.kapital-each-word {
+	text-transform: capitalize;
+}

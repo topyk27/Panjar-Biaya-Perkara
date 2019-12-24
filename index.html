@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Taksiran Panjar Biaya Perkara</title>
+	<link rel="stylesheet" type="text/css" href="asset/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="asset/tablesaw-master/dist/tablesaw.css"> -->
+	<link rel="stylesheet" type="text/css" href="asset/css/custom.css">
+</head>
+<body>
+	<div class="container">
+		<img src="asset/img/banner-pa-tenggarong.png" class="img-fluid" style="margin-bottom: 2rem;">
+
+		<h2 style="text-align: center;" class="kapital">Taksiran Panjar Biaya Perkara</h1>
+
+		<form>
+			<div class="form-group">
+				<label for="perkara">Perkara</label>
+				<select class="form-control kapital-each-word" id="perkara" required="">
+					<option value="">--Silahkan Pilih Perkara--</option>
+				</select>
+			</div>
+
+			<!-- <div class="form-group">
+				<label for="kecamatan">Kecamatan</label>
+				<select class="form-control" id="kecamatan" required="">
+					<option value="">--Silahkan Pilih Kecamatan--</option>
+				</select>
+
+			</div>
+			<div class="form-group">
+				<label for="kelurahan">Kelurahan/Desa</label>
+				<select class="form-control" id="kelurahan" required="">
+					<option value="">--Silahkan Pilih Kelurahan--</option>
+				</select>
+			</div> -->
+		</form>
+		<div class="table-responsive">
+			<table class="table table-bordered table-hover" id="tabel-perkara">
+				<thead>
+					<tr>
+						<th scope="col" colspan="6" id="judul-perkara" class="kapital" style="text-align: center;">Judul Perkara</th>
+					</tr>
+					<tr style="text-align: center;">
+						<th scope="col">Pelapor</th>
+						<th scope="col">Kecamatan</th>
+						<th scope="col">Kelurahan</th>
+						<th scope="col">Jumlah Panggilan</th>
+						<th scope="col">Biaya Perkara</th>
+						<th scope="col">Total Biaya</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row" id="pelapor">Penggugat</th>
+						<td>
+							<select id="kecamatan-penggugat" required="">
+								<option value="">--Pilih--</option>
+							</select>
+						</td>
+						<td>
+							<select id="kelurahan-penggugat" required="">
+								<option value="">--Pilih Kecamatan Dahulu--</option>
+							</select>
+						</td>
+						<td id="panggilan-penggugat">0</td>
+						<td id="biaya-penggugat">0</td>
+						<td id="total-penggugat">0</td>
+					</tr>
+					<tr>
+						<th scope="row" id="terlapor">Tergugat</th>
+						<td>
+							<span class="gaib" style="display:none;">Mass Media</span>
+							<select id="kecamatan-tergugat" required="">
+								<option value="">--Pilih--</option>
+							</select>
+						</td>
+						<td>
+							<span class="gaib" style="display:none;">Mass Media</span>
+							<select id="kelurahan-tergugat" required="">
+								<option value="">--Pilih Kecamatan Dahulu--</option>
+							</select>
+						</td>
+						<td id="panggilan-tergugat">0</td>
+						<td id="biaya-tergugat">
+							<!-- <input type="number" step="1000" name="manual_biaya_tergugat" value="" style="text-align:right;"> -->
+						</td>
+						<td id="total-tergugat">0</td>
+					</tr>
+					<tr id="tr-ongkir" class="lainnya" style="display:none;">
+						<th scope="row" colspan="5" style="text-align: right;">Ongkir</th>
+						<td id="biaya-ongkir">
+							<input type="number" step="1000" name="biaya-ongkir" style="text-align:right;">
+						</td>
+					</tr>
+					<tr id="tr-pengembalian" class="lainnya" style="display:none;">
+						<th scope="row" colspan="5" style="text-align:right">Biaya Pengembalian</th>
+						<td id="biaya-pengembalian">
+							<input type="number" step="1000" name="biaya-pengembalian" style="text-align:right;">
+						</td>
+					</tr>
+					<tr id="tr-pip">
+						<th scope="row" colspan="5" style="text-align: right;">PIP</th>
+						<td id="biaya-pip">0</td>
+					</tr>
+					<tr id="tr-admin">
+						<th scope="row" colspan="5" style="text-align: right;">ADMINISTRASI</th>
+						<td id="biaya-adm">0</td>
+					</tr>
+					<tr id="tr-pengumuman">
+						<th scope="row" colspan="5" style="text-align: right;">PENGUMUMAN</th>
+						<td id="biaya-pengumuman">0</td>
+					</tr>
+					<tr id="tr-skum">
+						<th scope="row" colspan="5" style="text-align: right;">SKUM</th>
+						<td id="total-biaya">0</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+<script src="asset/js/jquery-3.3.1.min.js"></script>
+
+<script src="asset/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+<script src="asset/js/index.js"></script>
+<!-- <script src="asset/tablesaw-master/dist/tablesaw.jquery.js"></script>
+<script src="asset/tablesaw-master/dist/tablesaw-init.js"></script> -->
+
+</body>
+</html>
