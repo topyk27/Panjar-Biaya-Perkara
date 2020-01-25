@@ -10,8 +10,10 @@ var pip = 0;
 var pengumuman = 0;
 var ghaib = 0;
 var perkara = "";
-var ongkir = 0;
-var pengembalian = 0;
+var ongkir_p = 0;
+var ongkir_t = 0;
+var pengembalian_p = 0;
+var pengembalian_t = 0;
 
 $.ajax({
 	url: svr+"perkara-read.php",
@@ -68,8 +70,10 @@ $('select#perkara').on('change', function(){
 	pengumuman = 0;
 	ghaib = 0;
 	perkara = this.value;
-	ongkir = 0;
-	pengembalian = 0;
+	ongkir_p = 0;
+	ongkir_t = 0;
+	pengembalian_p = 0;
+	pengembalian_t = 0;
 	$("select#kecamatan-penggugat").val($("option:first", this).val());
 	$("select#kecamatan-tergugat").val($("option:first", this).val());
 	$("select#kelurahan-penggugat").empty();
@@ -90,9 +94,12 @@ $('select#perkara').on('change', function(){
 	$('select#kelurahan-tergugat').show();
 	$('.gaib').hide();
 	$("option[value='0']").remove();
-	$("input[name='biaya-ongkir']").val('');
-	$("input[name='biaya-pengembalian']").val('');
-	$('.lainnya').hide();
+	$("input[name='biaya-ongkir-p']").val('');
+	$("input[name='biaya-ongkir-t']").val('');
+	$("input[name='biaya-pengembalian-p']").val('');
+	$("input[name='biaya-pengembalian-t']").val('');
+	$('.lainnya-p').hide();
+	$('.lainnya-t').hide();
 	// if (this.value == "") {
 	// 	$('#tabel-perkara').hide();
 	// }else{
@@ -116,6 +123,7 @@ $('select#perkara').on('change', function(){
 		$('#biaya-adm').text(format_duit(adm));
 		$('select#kecamatan-penggugat').prop('disabled', false);
 		$('select#kecamatan-tergugat').prop('disabled', false);
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
 		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
 		break;
 
@@ -142,6 +150,7 @@ $('select#perkara').on('change', function(){
 		$('#biaya-pip').text(format_duit(pip));
 		$("td#biaya-tergugat").text(format_duit(60000));
 		$("td#total-tergugat").text(format_duit(tot_tergugat));
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "cerai talak":
@@ -161,6 +170,7 @@ $('select#perkara').on('change', function(){
 		$('select#kecamatan-penggugat').prop('disabled', false);
 		$('select#kecamatan-tergugat').prop('disabled', false);
 		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "cerai talak ghaib":
@@ -186,6 +196,7 @@ $('select#perkara').on('change', function(){
 		$('#biaya-pip').text(format_duit(pip));
 		$("td#biaya-tergugat").text(format_duit(60000));
 		$("td#total-tergugat").text(format_duit(tot_tergugat));
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "dispensasi nikah":
@@ -236,6 +247,10 @@ $('select#perkara').on('change', function(){
 $('select#kecamatan-penggugat').on('change', function(){
 	var id_kecamatan_penggugat = this.value;
 	if(this.value!="" && this.value!=0){
+		$('.lainnya-p').hide();
+		ongkir_p = 0;
+		pengembalian_p = 0;
+		$("td#total-biaya").empty();
 		$.ajax({
 			url: svr+"kelurahan-read.php",
 			type: 'post',
@@ -248,8 +263,6 @@ $('select#kecamatan-penggugat').on('change', function(){
 					$("select#kelurahan-penggugat").empty();
 					$("select#kelurahan-penggugat").append("<option value=>--Pilih kelurahan--</option>");
 					$("td#biaya-penggugat").empty();
-					$("td#biaya-penggugat").empty();
-					$("td#total-penggugat").empty();
 					$("td#total-penggugat").empty();
 					var data_kelurahan_penggugat = respon.kelurahan;
 					$.each(data_kelurahan_penggugat, function(k,v){
@@ -266,11 +279,14 @@ $('select#kecamatan-penggugat').on('change', function(){
 		});
 	}
 	else {
-		$('.lainnya').show();
+		$('.lainnya-p').show();
+		$("td#total-biaya").empty();
+		$("td#biaya-penggugat").empty();
+		$("td#total-penggugat").empty();
 		$("select#kelurahan-penggugat").empty();
 		$("select#kelurahan-penggugat").append("<option>Masukkan biaya di kolom samping</option>");
-		$("td#biaya-penggugat").append("<input type='number' step='1000' name='manual_biaya' required style='text-align:right;'> ");
-		$("input[name='manual_biaya']").on('input', function() {
+		$("td#biaya-penggugat").append("<input type='number' step='1000' name='manual_biaya_p' required class='text-kanan'> ");
+		$("input[name='manual_biaya_p']").on('input', function() {
 			tot_penggugat = panggilan_penggugat*$(this).val();
 			console.log("penggugat =" + $(this).val());
 			console.log("total penggugat = " + tot_penggugat);
@@ -282,6 +298,10 @@ $('select#kecamatan-penggugat').on('change', function(){
 
 $('select#kecamatan-tergugat').on('change', function(){
 	if (this.value!="" && this.value!=0) {
+		$('.lainnya-t').hide();
+		$("td#total-biaya").empty();
+		ongkir_t = 0;
+		pengembalian_t = 0;
 		$.ajax({
 			url: svr+"kelurahan-read.php",
 			type: 'post',
@@ -310,13 +330,16 @@ $('select#kecamatan-tergugat').on('change', function(){
 		});
 	}
 	else {
-		$('.lainnya').show();
+		$('.lainnya-t').show();
+		$("td#total-biaya").empty();
+		$("td#biaya-tergugat").empty();
+		$("td#total-tergugat").empty();
 		$("select#kelurahan-tergugat").empty();
 		$("select#kelurahan-tergugat").append("<option>Masukkan biaya di kolom samping</option>");
-		$("td#biaya-tergugat").append("<input type='number' step='1000' name='manual_biaya' required style='text-align:right;'> ");
-		$("tr#tr-ongkir").show();
+		$("td#biaya-tergugat").append("<input type='number' step='1000' name='manual_biaya_t' required style='text-align:right;'> ");
+		$("tr#tr-ongkir-t").show();
 		$("tr#tr-pengembalian").show();
-		$("input[name='manual_biaya']").on('input', function() {
+		$("input[name='manual_biaya_t']").on('input', function() {
 			tot_tergugat = panggilan_tergugat*$(this).val();
 			console.log("tergugat =" + $(this).val());
 			console.log("total tergugat = " + tot_tergugat);
@@ -417,41 +440,53 @@ $("select#kecamatan-penggugat").on('click', function(){
 	}
 
 });
+
 $("select#kecamatan-tergugat").on('click', function(){
 	if (perkara=="") {
 		alert("Silahkan Pilih Perkara Terlebih Dahulu");
 	}
 });
 
-$("input[name='biaya-ongkir']").on('input', function(){
-	ongkir = $(this).val();
+$("input[name='biaya-ongkir-p']").on('input', function(){
+	ongkir_p = $(this).val();
 	SKUM();
 });
-$("input[name='biaya-pengembalian']").on('input', function(){
-	pengembalian = $(this).val();
-	SKUM();
-})
 
+$("input[name='biaya-ongkir-t']").on('input', function(){
+	ongkir_t = $(this).val();
+	SKUM();
+});
+
+$("input[name='biaya-pengembalian-p']").on('input', function(){
+	pengembalian_p = $(this).val();
+	SKUM();
+});
+
+$("input[name='biaya-pengembalian-t']").on('input', function(){
+	pengembalian_t = $(this).val();
+	SKUM();
+});
+// sesuaikan variabel ongkir sama pengembalian
 function SKUM(){
 	switch(perkara){
 		case "cerai gugat":
-		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir*3) + parseInt(pengembalian*3);
+		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir_p*2) + parseInt(pengembalian_p*2) + parseInt(ongkir_t*3) + parseInt(pengembalian_t*3);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai gugat ghaib":
-		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm);
+		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm) + parseInt(ongkir_p*2) + parseInt(pengembalian_p*2);
 		// total_biaya = parseInt(tot_penggugat) + parseInt(pip) + parseInt(adm);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai talak":
-		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir*3) + parseInt(pengembalian*3);
+		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir_p*3) + parseInt(pengembalian_p*3) + parseInt(ongkir_t*4) + parseInt(pengembalian_t*4);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai talak ghaib":
-		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm);
+		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm) + parseInt(ongkir_p*3) + parseInt(pengembalian_p*3);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 

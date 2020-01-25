@@ -5,3 +5,19 @@
 .kapital-each-word {
 	text-transform: capitalize;
 }
+
+.ilang {
+	display: none;
+}
+
+.text-kanan {
+	text-align: right;
+}
+
+.text-tengah {
+	text-align: center;
+}
+
+.bener {
+	margin-bottom: 2rem;
+}

@@ -5,6 +5,7 @@
  */
 class DB_CONNECT
 {
+	// static $svr = '192.168.2.73';
 	static $svr = 'localhost';
 	function __construct()
 	{
