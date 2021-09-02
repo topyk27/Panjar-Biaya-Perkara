@@ -1,5 +1,5 @@
 // var svr = 'http://localhost/panjar_perkara/proses/';
-var svr = '/panjar_perkara/proses/';
+var svr = '/panjar-biaya-perkara/proses/';
 var tot_penggugat = 0;
 var tot_tergugat = 0;
 var adm = 0;
