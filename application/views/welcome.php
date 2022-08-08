@@ -3,9 +3,8 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Taksiran Panjar Biaya Perkara</title>
-	<link rel="stylesheet" type="text/css" href="asset/bootstrap-4.0.0-dist/css/bootstrap.min.css">
-	<!-- <link rel="stylesheet" type="text/css" href="asset/tablesaw-master/dist/tablesaw.css"> -->
-	<link rel="stylesheet" type="text/css" href="asset/css/custom.css">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('asset/bootstrap-4.0.0-dist/css/bootstrap.min.css'); ?>">	
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('asset/css/custom.css'); ?>">
 </head>
 <body>
 	<div class="container">
@@ -119,12 +118,10 @@
 		</div>
 	</div>
 
-<script src="asset/js/jquery-3.3.1.min.js"></script>
+<script src="<?php echo base_url('asset/js/jquery-3.3.1.min.js'); ?>"></script>
 
-<script src="asset/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
-<script src="asset/js/php5/index-web.min.js"></script>
-<!-- <script src="asset/tablesaw-master/dist/tablesaw.jquery.js"></script>
-<script src="asset/tablesaw-master/dist/tablesaw-init.js"></script> -->
-
+<script src="<?php echo base_url('asset/bootstrap-4.0.0-dist/js/bootstrap.min.js'); ?>"></script>
+<script>const base_url = "<?php echo base_url(); ?>";</script>
+<script src="<?php echo base_url('asset/js/index.min.js'); ?>"></script>
 </body>
 </html>

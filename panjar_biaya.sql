@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 4.8.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2019 at 07:32 AM
--- Server version: 10.1.37-MariaDB
--- PHP Version: 5.6.40
+-- Generation Time: Aug 08, 2022 at 11:04 AM
+-- Server version: 10.1.32-MariaDB
+-- PHP Version: 5.6.36
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -321,6 +321,25 @@ INSERT INTO `radius` (`id`, `kecamatan`, `kelurahan`, `biaya`) VALUES
 (366, 13, 'Desa Wono Sari', 800000),
 (367, 13, 'Desa Sebelimbingan', 600000),
 (368, 15, 'Desa Pulau Harapan', 800000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `setting`
+--
+
+CREATE TABLE `setting` (
+  `token` text NOT NULL,
+  `nama_pa` varchar(128) NOT NULL,
+  `nama_pa_pendek` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `setting`
+--
+
+INSERT INTO `setting` (`token`, `nama_pa`, `nama_pa_pendek`) VALUES
+('8c26761e-c2bc-3630-8d24-ec75d1088dd8', 'Tenggarong', 'PA.Tgr');
 
 --
 -- Indexes for dumped tables

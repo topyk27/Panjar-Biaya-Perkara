@@ -1,5 +1,5 @@
 // var svr = 'http://localhost/panjar_perkara/proses/';
-var svr = '/proses/';
+var svr = '/panjar-biaya-perkara/proses/';
 var tot_penggugat = 0;
 var tot_tergugat = 0;
 var adm = 0;
@@ -10,6 +10,10 @@ var pip = 0;
 var pengumuman = 0;
 var ghaib = 0;
 var perkara = "";
+var ongkir_p = 0;
+var ongkir_t = 0;
+var pengembalian_p = 0;
+var pengembalian_t = 0;
 
 $.ajax({
 	url: svr+"perkara-read.php",
@@ -19,7 +23,7 @@ $.ajax({
 		if(respon.success==1){
 			var data_perkara = respon.perkara;
 			$.each(data_perkara, function(k, v){
-				// console.log(v.id + ":" + v.perkara);
+				
 				$("select#perkara").append("<option value='"+v.perkara+"'>"+v.perkara+"</option>");
 			});
 		}
@@ -42,10 +46,10 @@ $.ajax({
 				$("select#kecamatan-penggugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
 				$("select#kecamatan-tergugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
 			});
-			console.log('data kecamatan ada');
+			// console.log('data kecamatan ada');
 		}
 		else{
-			console.log("data kecamatan kosong");
+			// console.log("data kecamatan kosong");
 		}
 	},
 	error: function(err){
@@ -66,6 +70,10 @@ $('select#perkara').on('change', function(){
 	pengumuman = 0;
 	ghaib = 0;
 	perkara = this.value;
+	ongkir_p = 0;
+	ongkir_t = 0;
+	pengembalian_p = 0;
+	pengembalian_t = 0;
 	$("select#kecamatan-penggugat").val($("option:first", this).val());
 	$("select#kecamatan-tergugat").val($("option:first", this).val());
 	$("select#kelurahan-penggugat").empty();
@@ -85,12 +93,19 @@ $('select#perkara').on('change', function(){
 	$('select#kecamatan-tergugat').show();
 	$('select#kelurahan-tergugat').show();
 	$('.gaib').hide();
+	$("option[value='0']").remove();
+	$("input[name='biaya-ongkir-p']").val('');
+	$("input[name='biaya-ongkir-t']").val('');
+	$("input[name='biaya-pengembalian-p']").val('');
+	$("input[name='biaya-pengembalian-t']").val('');
+	$('.lainnya-p').hide();
+	$('.lainnya-t').hide();
 	// if (this.value == "") {
 	// 	$('#tabel-perkara').hide();
 	// }else{
 	// 	$('#tabel-perkara').show();
 	// }
-	
+
 	switch(this.value){
 		case "cerai gugat":
 		$('#tr-pip').hide();
@@ -106,6 +121,10 @@ $('select#perkara').on('change', function(){
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
+		$('select#kecamatan-penggugat').prop('disabled', false);
+		$('select#kecamatan-tergugat').prop('disabled', false);
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "cerai gugat ghaib":
@@ -131,6 +150,7 @@ $('select#perkara').on('change', function(){
 		$('#biaya-pip').text(format_duit(pip));
 		$("td#biaya-tergugat").text(format_duit(60000));
 		$("td#total-tergugat").text(format_duit(tot_tergugat));
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "cerai talak":
@@ -147,6 +167,10 @@ $('select#perkara').on('change', function(){
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
+		$('select#kecamatan-penggugat').prop('disabled', false);
+		$('select#kecamatan-tergugat').prop('disabled', false);
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "cerai talak ghaib":
@@ -172,6 +196,7 @@ $('select#perkara').on('change', function(){
 		$('#biaya-pip').text(format_duit(pip));
 		$("td#biaya-tergugat").text(format_duit(60000));
 		$("td#total-tergugat").text(format_duit(tot_tergugat));
+		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
 		break;
 
 		case "dispensasi nikah":
@@ -188,6 +213,8 @@ $('select#perkara').on('change', function(){
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
+		$('select#kecamatan-penggugat').prop('disabled', false);
+		$('select#kecamatan-tergugat').prop('disabled', false);
 		break;
 
 		case "isbat nikah":
@@ -206,13 +233,24 @@ $('select#perkara').on('change', function(){
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
 		$('#biaya-pengumuman').text(format_duit(pengumuman));
+		$('select#kecamatan-penggugat').prop('disabled', false);
+		$('select#kecamatan-tergugat').prop('disabled', false);
+		break;
+
+		default :
+		$('select#kecamatan-penggugat').prop('disabled', 'disabled');
+		$('select#kecamatan-tergugat').prop('disabled', 'disabled');
 		break;
 	}
 });
 
 $('select#kecamatan-penggugat').on('change', function(){
 	var id_kecamatan_penggugat = this.value;
-	if(this.value!=""){
+	if(this.value!="" && this.value!=0){
+		$('.lainnya-p').hide();
+		ongkir_p = 0;
+		pengembalian_p = 0;
+		$("td#total-biaya").empty();
 		$.ajax({
 			url: svr+"kelurahan-read.php",
 			type: 'post',
@@ -225,15 +263,13 @@ $('select#kecamatan-penggugat').on('change', function(){
 					$("select#kelurahan-penggugat").empty();
 					$("select#kelurahan-penggugat").append("<option value=>--Pilih kelurahan--</option>");
 					$("td#biaya-penggugat").empty();
-					$("td#biaya-penggugat").empty();
-					$("td#total-penggugat").empty();
 					$("td#total-penggugat").empty();
 					var data_kelurahan_penggugat = respon.kelurahan;
 					$.each(data_kelurahan_penggugat, function(k,v){
 						$("select#kelurahan-penggugat").append("<option value="+v.id+">"+v.kelurahan+"</option>");
 					});
 				}else{
-					console.log("data kelurahan penggugat kosong");
+					// console.log("data kelurahan penggugat kosong");
 				}
 			},
 			error: function(err){
@@ -242,10 +278,30 @@ $('select#kecamatan-penggugat').on('change', function(){
 			}
 		});
 	}
+	else {
+		$('.lainnya-p').show();
+		$("td#total-biaya").empty();
+		$("td#biaya-penggugat").empty();
+		$("td#total-penggugat").empty();
+		$("select#kelurahan-penggugat").empty();
+		$("select#kelurahan-penggugat").append("<option>Masukkan biaya di kolom samping</option>");
+		$("td#biaya-penggugat").append("<input type='number' step='1000' name='manual_biaya_p' required class='text-kanan'> ");
+		$("input[name='manual_biaya_p']").on('input', function() {
+			tot_penggugat = panggilan_penggugat*$(this).val();
+			// console.log("penggugat =" + $(this).val());
+			// console.log("total penggugat = " + tot_penggugat);
+			$("td#total-penggugat").text(format_duit(tot_penggugat));
+			SKUM();
+		});
+	}
 });
 
 $('select#kecamatan-tergugat').on('change', function(){
-	if (this.value!="") {
+	if (this.value!="" && this.value!=0) {
+		$('.lainnya-t').hide();
+		$("td#total-biaya").empty();
+		ongkir_t = 0;
+		pengembalian_t = 0;
 		$.ajax({
 			url: svr+"kelurahan-read.php",
 			type: 'post',
@@ -264,13 +320,31 @@ $('select#kecamatan-tergugat').on('change', function(){
 						$("select#kelurahan-tergugat").append("<option value="+v.id+">"+v.kelurahan+"</option>");
 					});
 				}else{
-					console.log("data kelurahan tergugat kosong");
+					// console.log("data kelurahan tergugat kosong");
 				}
 			},
 			error: function(err){
 				alert("ada masalah, harap refresh halaman");
 				console.log(err);
 			}
+		});
+	}
+	else {
+		$('.lainnya-t').show();
+		$("td#total-biaya").empty();
+		$("td#biaya-tergugat").empty();
+		$("td#total-tergugat").empty();
+		$("select#kelurahan-tergugat").empty();
+		$("select#kelurahan-tergugat").append("<option>Masukkan biaya di kolom samping</option>");
+		$("td#biaya-tergugat").append("<input type='number' step='1000' name='manual_biaya_t' required style='text-align:right;'> ");
+		$("tr#tr-ongkir-t").show();
+		$("tr#tr-pengembalian").show();
+		$("input[name='manual_biaya_t']").on('input', function() {
+			tot_tergugat = panggilan_tergugat*$(this).val();
+			// console.log("tergugat =" + $(this).val());
+			// console.log("total tergugat = " + tot_tergugat);
+			$("td#total-tergugat").text(format_duit(tot_tergugat));
+			SKUM();
 		});
 	}
 });
@@ -294,7 +368,7 @@ $('select#kelurahan-penggugat').on('change', function(){
 					$("td#total-penggugat").text(format_duit(tot_penggugat));
 					SKUM();
 				}else{
-					console.log("gagal ambil detail radius penggugat");
+					// console.log("gagal ambil detail radius penggugat");
 				}
 			},
 			error: function(err){
@@ -348,7 +422,7 @@ $('select#kelurahan-tergugat').on('change', function(){
 					$("td#total-tergugat").text(format_duit(tot_tergugat));
 					SKUM();
 				}else{
-					console.log("gagal ambil detail radius tergugat");
+					// console.log("gagal ambil detail radius tergugat");
 				}
 			},
 			error: function(err){
@@ -364,33 +438,55 @@ $("select#kecamatan-penggugat").on('click', function(){
 	if (perkara=="") {
 		alert("Silahkan Pilih Perkara Terlebih Dahulu");
 	}
+
 });
+
 $("select#kecamatan-tergugat").on('click', function(){
 	if (perkara=="") {
 		alert("Silahkan Pilih Perkara Terlebih Dahulu");
 	}
 });
 
+$("input[name='biaya-ongkir-p']").on('input', function(){
+	ongkir_p = $(this).val();
+	SKUM();
+});
+
+$("input[name='biaya-ongkir-t']").on('input', function(){
+	ongkir_t = $(this).val();
+	SKUM();
+});
+
+$("input[name='biaya-pengembalian-p']").on('input', function(){
+	pengembalian_p = $(this).val();
+	SKUM();
+});
+
+$("input[name='biaya-pengembalian-t']").on('input', function(){
+	pengembalian_t = $(this).val();
+	SKUM();
+});
+// sesuaikan variabel ongkir sama pengembalian
 function SKUM(){
 	switch(perkara){
 		case "cerai gugat":
-		total_biaya = tot_penggugat+tot_tergugat+adm;
+		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir_p*2) + parseInt(pengembalian_p*2) + parseInt(ongkir_t*3) + parseInt(pengembalian_t*3);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai gugat ghaib":
-		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm);
+		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm) + parseInt(ongkir_p*2) + parseInt(pengembalian_p*2);
 		// total_biaya = parseInt(tot_penggugat) + parseInt(pip) + parseInt(adm);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai talak":
-		total_biaya = tot_penggugat+tot_tergugat+adm;
+		total_biaya = tot_penggugat+tot_tergugat+adm+ parseInt(ongkir_p*3) + parseInt(pengembalian_p*3) + parseInt(ongkir_t*4) + parseInt(pengembalian_t*4);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
 		case "cerai talak ghaib":
-		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm);
+		total_biaya = parseInt(tot_penggugat) + parseInt(tot_tergugat) + parseInt(pip) + parseInt(adm) + parseInt(ongkir_p*3) + parseInt(pengembalian_p*3);
 		$("td#total-biaya").text(format_duit(total_biaya));
 		break;
 
@@ -411,7 +507,7 @@ function format_duit(bilangan){
 		sisa 	= number_string.length % 3,
 		rupiah 	= number_string.substr(0, sisa),
 		ribuan 	= number_string.substr(sisa).match(/\d{3}/g);
-			
+
 	if (ribuan) {
 		separator = sisa ? '.' : '';
 		rupiah += separator + ribuan.join('.');
@@ -419,3 +515,73 @@ function format_duit(bilangan){
 	return "Rp. " + rupiah;
 }
 
+$(document).ready(function(){
+	var tkn,nama_pa,nama_pa_pendek;
+	$.ajax({
+		url: svr+"get-token.php",
+		method: "GET",
+		dataType: 'json',
+		success: function(data)
+		{
+			if(data['success']==1)
+			{
+				var d = data['setting'][0];				
+				tkn = d.token;
+				nama_pa = d.nama_pa;
+				nama_pa_pendek = d.nama_pa_pendek;
+				$.ajax({
+					url: "https://raw.githubusercontent.com/topyk27/Panjar-Biaya-Perkara/main/asset/js/token.json",
+					method: "GET",
+					dataType: 'json',
+					success: function(data)
+					{
+						try {
+							if(nama_pa==data[nama_pa_pendek][0].nama_pa && nama_pa_pendek==data[nama_pa_pendek][0].nama_pa_pendek && tkn==data[nama_pa_pendek][0].token)
+							{
+								
+							}
+							else
+							{
+								location.replace(Math.random());
+							}
+						} catch (error) {
+							location.replace(Math.random());
+						}
+					},
+					error: function(err)
+					{
+						$.ajax({
+							url: "/panjar-biaya-perkara/asset/js/token.json",
+							method: "GET",
+							dataType: 'json',
+							success: function(lokal)
+							{								
+								if(nama_pa==lokal[nama_pa_pendek][0].nama_pa && nama_pa_pendek==lokal[nama_pa_pendek][0].nama_pa_pendek && tkn==lokal[nama_pa_pendek][0].token)
+								{
+									
+								}
+								else
+								{
+									location.replace(Math.random());
+								}
+							},
+							error: function(err)
+							{
+								location.replace(Math.random());
+							}
+						});
+					}
+				});
+			}
+			else
+			{
+				location.replace(Math.random());
+			}
+
+		},
+		error: function(err)
+		{
+			location.replace(Math.random());
+		}
+	});
+});
