@@ -537,7 +537,7 @@ $(document).ready(function(){
 				nama_pa = d.nama_pa;
 				nama_pa_pendek = d.nama_pa_pendek;
 				$.ajax({
-					url: "https://raw.githubusercontent.com/topyk27/Panjar-Biaya-Perkara/main/asset/js/token.json",
+					url: "https://raw.githubusercontent.com/topyk27/Panjar-Biaya-Perkara/master/asset/js/token.json",
 					method: "GET",
 					dataType: 'json',
 					success: function(data)
