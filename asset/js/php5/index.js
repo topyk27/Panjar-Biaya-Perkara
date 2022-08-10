@@ -1,5 +1,5 @@
-// var svr = 'http://localhost/panjar_perkara/proses/';
-var svr = '/panjar-biaya-perkara/proses/';
+// var svr = 'http://localhost/Panjar-Biaya-Perkara/proses/';
+var svr = '/Panjar-Biaya-Perkara/proses/';
 var tot_penggugat = 0;
 var tot_tergugat = 0;
 var adm = 0;
@@ -14,16 +14,18 @@ var ongkir_p = 0;
 var ongkir_t = 0;
 var pengembalian_p = 0;
 var pengembalian_t = 0;
+// const base_url = "http://localhost/panjar-biaya-perkara/proses/";
 
 $.ajax({
-	url: svr+"perkara-read.php",
+	// url: base_url+"perkara-read.php",
+	url: base_url+"perkara/get_perkara",
 	type: 'post',
 	dataType: 'json',
 	success: function(respon){
 		if(respon.success==1){
 			var data_perkara = respon.perkara;
 			$.each(data_perkara, function(k, v){
-				
+				// console.log(v.id + ":" + v.perkara);
 				$("select#perkara").append("<option value='"+v.perkara+"'>"+v.perkara+"</option>");
 			});
 		}
@@ -36,7 +38,8 @@ $.ajax({
 });
 
 $.ajax({
-	url: svr+"kecamatan-read.php",
+	// url: base_url+"kecamatan-read.php",
+	url: base_url+"perkara/get_kecamatan",
 	type: 'post',
 	dataType: 'json',
 	success: function(respon){
@@ -46,10 +49,10 @@ $.ajax({
 				$("select#kecamatan-penggugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
 				$("select#kecamatan-tergugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
 			});
-			// console.log('data kecamatan ada');
+			console.log('data kecamatan ada');
 		}
 		else{
-			// console.log("data kecamatan kosong");
+			console.log("data kecamatan kosong");
 		}
 	},
 	error: function(err){
@@ -117,7 +120,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 3;
-		adm = 126000;
+		adm = 130000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -141,7 +144,7 @@ $('select#perkara').on('change', function(){
 
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 130000;
 		pip = 30000;
 		tot_tergugat = panggilan_tergugat*60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
@@ -163,7 +166,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 3;
 		panggilan_tergugat = 4;
-		adm = 126000;
+		adm = 130000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -187,7 +190,7 @@ $('select#perkara').on('change', function(){
 
 		panggilan_penggugat = 3;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 130000;
 		pip = 30000;
 		tot_tergugat = panggilan_tergugat*60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
@@ -209,7 +212,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 120000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -227,7 +230,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 116000;
+		adm = 120000;
 		pengumuman = 60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
@@ -252,7 +255,8 @@ $('select#kecamatan-penggugat').on('change', function(){
 		pengembalian_p = 0;
 		$("td#total-biaya").empty();
 		$.ajax({
-			url: svr+"kelurahan-read.php",
+			// url: base_url+"kelurahan-read.php",
+			url: base_url+"perkara/get_kelurahan",
 			type: 'post',
 			data: {
 				id: id_kecamatan_penggugat,
@@ -269,7 +273,7 @@ $('select#kecamatan-penggugat').on('change', function(){
 						$("select#kelurahan-penggugat").append("<option value="+v.id+">"+v.kelurahan+"</option>");
 					});
 				}else{
-					// console.log("data kelurahan penggugat kosong");
+					console.log("data kelurahan penggugat kosong");
 				}
 			},
 			error: function(err){
@@ -288,8 +292,8 @@ $('select#kecamatan-penggugat').on('change', function(){
 		$("td#biaya-penggugat").append("<input type='number' step='1000' name='manual_biaya_p' required class='text-kanan'> ");
 		$("input[name='manual_biaya_p']").on('input', function() {
 			tot_penggugat = panggilan_penggugat*$(this).val();
-			// console.log("penggugat =" + $(this).val());
-			// console.log("total penggugat = " + tot_penggugat);
+			console.log("penggugat =" + $(this).val());
+			console.log("total penggugat = " + tot_penggugat);
 			$("td#total-penggugat").text(format_duit(tot_penggugat));
 			SKUM();
 		});
@@ -303,7 +307,8 @@ $('select#kecamatan-tergugat').on('change', function(){
 		ongkir_t = 0;
 		pengembalian_t = 0;
 		$.ajax({
-			url: svr+"kelurahan-read.php",
+			// url: base_url+"kelurahan-read.php",
+			url: base_url+"perkara/get_kelurahan",
 			type: 'post',
 			data: {
 				id: this.value,
@@ -320,7 +325,7 @@ $('select#kecamatan-tergugat').on('change', function(){
 						$("select#kelurahan-tergugat").append("<option value="+v.id+">"+v.kelurahan+"</option>");
 					});
 				}else{
-					// console.log("data kelurahan tergugat kosong");
+					console.log("data kelurahan tergugat kosong");
 				}
 			},
 			error: function(err){
@@ -341,8 +346,8 @@ $('select#kecamatan-tergugat').on('change', function(){
 		$("tr#tr-pengembalian").show();
 		$("input[name='manual_biaya_t']").on('input', function() {
 			tot_tergugat = panggilan_tergugat*$(this).val();
-			// console.log("tergugat =" + $(this).val());
-			// console.log("total tergugat = " + tot_tergugat);
+			console.log("tergugat =" + $(this).val());
+			console.log("total tergugat = " + tot_tergugat);
 			$("td#total-tergugat").text(format_duit(tot_tergugat));
 			SKUM();
 		});
@@ -352,7 +357,8 @@ $('select#kecamatan-tergugat').on('change', function(){
 $('select#kelurahan-penggugat').on('change', function(){
 	if (this.value!="") {
 		$.ajax({
-			url: svr+"detail-radius.php",
+			// url: base_url+"detail-radius.php",
+			url: base_url+"perkara/detail_radius",
 			type: 'post',
 			data: {
 				id: this.value,
@@ -368,7 +374,7 @@ $('select#kelurahan-penggugat').on('change', function(){
 					$("td#total-penggugat").text(format_duit(tot_penggugat));
 					SKUM();
 				}else{
-					// console.log("gagal ambil detail radius penggugat");
+					console.log("gagal ambil detail radius penggugat");
 				}
 			},
 			error: function(err){
@@ -382,7 +388,8 @@ $('select#kelurahan-penggugat').on('change', function(){
 $('select#kelurahan-tergugat').on('change', function(){
 	if (this.value!="") {
 		$.ajax({
-			url: svr+"detail-radius.php",
+			// url: base_url+"detail-radius.php",
+			url: base_url+"perkara/detail_radius",
 			type: 'post',
 			data: {
 				id: this.value,
@@ -422,7 +429,7 @@ $('select#kelurahan-tergugat').on('change', function(){
 					$("td#total-tergugat").text(format_duit(tot_tergugat));
 					SKUM();
 				}else{
-					// console.log("gagal ambil detail radius tergugat");
+					console.log("gagal ambil detail radius tergugat");
 				}
 			},
 			error: function(err){
@@ -518,7 +525,7 @@ function format_duit(bilangan){
 $(document).ready(function(){
 	var tkn,nama_pa,nama_pa_pendek;
 	$.ajax({
-		url: svr+"get-token.php",
+		url: base_url+"perkara/get_token",
 		method: "GET",
 		dataType: 'json',
 		success: function(data)
@@ -551,7 +558,7 @@ $(document).ready(function(){
 					error: function(err)
 					{
 						$.ajax({
-							url: "/panjar-biaya-perkara/asset/js/token.json",
+							url: base_url+"asset/js/token.json",
 							method: "GET",
 							dataType: 'json',
 							success: function(lokal)
@@ -562,7 +569,7 @@ $(document).ready(function(){
 								}
 								else
 								{
-									location.replace(Math.random());
+									location.replace(Math.random());								
 								}
 							},
 							error: function(err)

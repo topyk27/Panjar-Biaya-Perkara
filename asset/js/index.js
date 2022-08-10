@@ -120,7 +120,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 3;
-		adm = 126000;
+		adm = 130000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -144,7 +144,7 @@ $('select#perkara').on('change', function(){
 
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 130000;
 		pip = 30000;
 		tot_tergugat = panggilan_tergugat*60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
@@ -166,7 +166,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 3;
 		panggilan_tergugat = 4;
-		adm = 126000;
+		adm = 130000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -190,7 +190,7 @@ $('select#perkara').on('change', function(){
 
 		panggilan_penggugat = 3;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 130000;
 		pip = 30000;
 		tot_tergugat = panggilan_tergugat*60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
@@ -212,7 +212,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 126000;
+		adm = 120000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);
 		$('#biaya-adm').text(format_duit(adm));
@@ -230,7 +230,7 @@ $('select#perkara').on('change', function(){
 		$('#judul-perkara').text(this.value);
 		panggilan_penggugat = 2;
 		panggilan_tergugat = 2;
-		adm = 116000;
+		adm = 120000;
 		pengumuman = 60000;
 		$('#panggilan-penggugat').text(panggilan_penggugat);
 		$('#panggilan-tergugat').text(panggilan_tergugat);

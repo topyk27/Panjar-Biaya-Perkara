@@ -122,6 +122,6 @@
 
 <script src="<?php echo base_url('asset/bootstrap-4.0.0-dist/js/bootstrap.min.js'); ?>"></script>
 <script>const base_url = "<?php echo base_url(); ?>";</script>
-<script src="<?php echo base_url('asset/js/index.min.js'); ?>"></script>
+<script src="<?php echo base_url('asset/js/index.js?').time(); ?>"></script>
 </body>
 </html>
