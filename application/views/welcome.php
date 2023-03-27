@@ -116,6 +116,37 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title text-center">Statistik Pengunjung</h3>
+					</div>
+					<div class="card-body">
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th scope="col">Hari Ini</th>
+									<th scope="col">Kemarin</th>
+									<th scope="col">Minggu Ini</th>
+									<th scope="col">Bulan Ini</th>
+									<th scope="col">Tahun Ini</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><?php echo $today; ?></td>
+									<td><?php echo $yesterday; ?></td>
+									<td><?php echo $sevenDays; ?></td>
+									<td><?php echo $month; ?></td>
+									<td><?php echo $year; ?></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 <script src="<?php echo base_url('asset/js/jquery-3.3.1.min.js'); ?>"></script>
