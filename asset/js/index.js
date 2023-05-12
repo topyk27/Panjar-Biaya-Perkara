@@ -37,218 +37,357 @@ $.ajax({
 	}
 });
 
-$.ajax({
-	// url: base_url+"kecamatan-read.php",
-	url: base_url+"perkara/get_kecamatan",
-	type: 'post',
-	dataType: 'json',
-	success: function(respon){
-		if(respon.success==1){
-			var data_kecamatan =  respon.kecamatan;
-			$.each(data_kecamatan, function(k,v){
-				$("select#kecamatan-penggugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
-				$("select#kecamatan-tergugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
-			});
-			console.log('data kecamatan ada');
-		}
-		else{
-			console.log("data kecamatan kosong");
-		}
-	},
-	error: function(err){
-		alert("ada masalah, harap refresh halaman");
-		console.log(err);
+// $.ajax({
+// 	// url: base_url+"kecamatan-read.php",
+// 	url: base_url+"perkara/get_kecamatan",
+// 	type: 'post',
+// 	dataType: 'json',
+// 	success: function(respon){
+// 		if(respon.success==1){
+// 			var data_kecamatan =  respon.kecamatan;
+// 			$.each(data_kecamatan, function(k,v){
+// 				$("select#kecamatan-penggugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
+// 				$("select#kecamatan-tergugat").append("<option value="+v.id+">"+v.kecamatan+"</option>");
+// 			});
+// 			console.log('data kecamatan ada');
+// 		}
+// 		else{
+// 			console.log("data kecamatan kosong");
+// 		}
+// 	},
+// 	error: function(err){
+// 		alert("ada masalah, harap refresh halaman");
+// 		console.log(err);
+// 	}
+// });
+
+const selectLokasi = $("select#lokasi");
+const selectPerkara = $("select#perkara");
+const tabel = $("#tabel-perkara");
+const pukung = (el,label=null) =>
+{
+	el.hide();
+	$("label[for='"+label+"']").hide();
+}
+const tampil = (el,label=null) =>
+{
+	el.show();
+	if(label!=null)
+	{
+		$("label[for='"+label+"']").show();
+	}
+}
+
+selectLokasi.on('change', function(){
+	const lokasi = this.value;	
+	if(this.value=='wasu' || this.value=='wkwk')
+	{
+		pukung(selectPerkara,'perkara');
+		pukung(tabel);
+	}
+	else
+	{
+		tampil(selectPerkara,'perkara');		
+		$("select#perkara").val("").change();
+		getKecamatanP(lokasi);
+		getKecamatanT(lokasi);
 	}
 });
 
+const getKecamatanP = (lokasi) =>
+	{
+	const kecamatanPenggugat = $("#kecamatan-penggugat");
+	kecamatanPenggugat.empty();
+	$.ajax({
+		url: base_url+'perkara/get_kecamatan',
+		type: 'post',
+		data: {
+			lokasi: lokasi,
+		},
+		dataType: 'json',
+		success: function(respon)
+		{
+			if(respon.success==1)
+			{
+				const data_kecamatan = respon.kecamatan;
+				kecamatanPenggugat.append("<option value=''>--Pilih--</option>");
+				$.each(data_kecamatan, function(k,v){
+					kecamatanPenggugat.append("<option value="+v.id+">"+v.kecamatan+"</option>");
+				});
+			}
+			else
+			{
+				console.log('data kecamatan tidak ada');
+			}
+		},
+		error: function(err)
+		{
+			console.log(err.responseText);
+			alert('Ada masalah harap refresh halaman');
+		}
+	});
+}
+
+const getKecamatanT = (lokasi,p2=null) =>
+{
+	const kecamatanTergugat = $("#kecamatan-tergugat");
+	kecamatanTergugat.empty();
+	if(p2==null)
+	{
+		lokasi = 1;
+	}
+	$.ajax({
+		url: base_url+'perkara/get_kecamatan',
+		type: 'post',
+		data: {
+			lokasi: lokasi,
+		},
+		dataType: 'json',
+		success: function(respon)
+		{				
+			if(respon.success==1)
+			{
+				const data_kecamatan = respon.kecamatan;
+				kecamatanTergugat.append("<option value=''>--Pilih--</option>");
+				$.each(data_kecamatan, function(k,v){
+					kecamatanTergugat.append("<option value="+v.id+">"+v.kecamatan+"</option>");
+				});
+			}
+			else
+			{
+				console.log('data kecamatan tidak ada');
+			}
+		},
+		error: function(err)
+		{
+			console.log(err.responseText);
+			alert('Ada masalah harap refresh halaman');
+		}
+	});
+}
+
 
 $('select#perkara').on('change', function(){
-	tot_penggugat = 0;
-	tot_tergugat = 0;
-	adm = 0;
-	total_biaya = 0;
-	panggilan_penggugat = 0;
-	panggilan_tergugat = 0;
-	pip = 0;
-	pengumuman = 0;
-	ghaib = 0;
-	perkara = this.value;
-	ongkir_p = 0;
-	ongkir_t = 0;
-	pengembalian_p = 0;
-	pengembalian_t = 0;
-	$("select#kecamatan-penggugat").val($("option:first", this).val());
-	$("select#kecamatan-tergugat").val($("option:first", this).val());
-	$("select#kelurahan-penggugat").empty();
-	$("select#kelurahan-penggugat").append("<option value=>--Pilih Kecamatan Dahulu--</option>");
-	$("select#kelurahan-tergugat").empty();
-	$("select#kelurahan-tergugat").append("<option value=>--Pilih Kecamatan Dahulu--</option>");
-	$("td#panggilan-penggugat").empty();
-	$("td#panggilan-tergugat").empty();
-	$("td#biaya-penggugat").empty();
-	$("td#biaya-tergugat").empty();
-	$("td#total-penggugat").empty();
-	$("td#total-tergugat").empty();
-	$("td#biaya-pip").empty();
-	$("td#biaya-adm").empty();
-	$("td#biaya-pengumuman").empty();
-	$("td#total-biaya").empty();
-	$('select#kecamatan-tergugat').show();
-	$('select#kelurahan-tergugat').show();
-	$('.gaib').hide();
-	$("option[value='0']").remove();
-	$("input[name='biaya-ongkir-p']").val('');
-	$("input[name='biaya-ongkir-t']").val('');
-	$("input[name='biaya-pengembalian-p']").val('');
-	$("input[name='biaya-pengembalian-t']").val('');
-	$('.lainnya-p').hide();
-	$('.lainnya-t').hide();
-	// if (this.value == "") {
-	// 	$('#tabel-perkara').hide();
-	// }else{
-	// 	$('#tabel-perkara').show();
-	// }
-
-	switch(this.value){
-		case "cerai gugat":
-		$('#tr-pip').hide();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').hide();
-		$('#tr-skum').show();
-		$('#pelapor').text("Penggugat");
-		$('#terlapor').text("Tergugat");
-		$('#judul-perkara').text(this.value);
-		panggilan_penggugat = 2;
-		panggilan_tergugat = 3;
-		adm = 130000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('select#kecamatan-penggugat').prop('disabled', false);
-		$('select#kecamatan-tergugat').prop('disabled', false);
-		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
-		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
-		break;
-
-		case "cerai gugat ghaib":
-		$('#tr-pip').show();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').hide();
-		$('#tr-skum').show();
-		$('#pelapor').text("Penggugat");
-		$('#terlapor').text("Tergugat");
-		$('#judul-perkara').text(this.value);
-		$('select#kecamatan-tergugat').hide();
-		$('select#kelurahan-tergugat').hide();
-		$('.gaib').show();
-
-		panggilan_penggugat = 2;
-		panggilan_tergugat = 2;
-		adm = 130000;
-		pip = 30000;
-		tot_tergugat = panggilan_tergugat*60000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('#biaya-pip').text(format_duit(pip));
-		$("td#biaya-tergugat").text(format_duit(60000));
-		$("td#total-tergugat").text(format_duit(tot_tergugat));
-		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
-		break;
-
-		case "cerai talak":
-		$('#tr-pip').hide();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').hide();
-		$('#tr-skum').show();
-		$('#pelapor').text("Pemohon");
-		$('#terlapor').text("Termohon");
-		$('#judul-perkara').text(this.value);
-		panggilan_penggugat = 3;
-		panggilan_tergugat = 4;
-		adm = 130000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('select#kecamatan-penggugat').prop('disabled', false);
-		$('select#kecamatan-tergugat').prop('disabled', false);
-		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
-		$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
-		break;
-
-		case "cerai talak ghaib":
-		$('#tr-pip').show();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').hide();
-		$('#tr-skum').show();
-		$('#pelapor').text("Pemohon");
-		$('#terlapor').text("Termohon");
-		$('#judul-perkara').text(this.value);
-		$('select#kecamatan-tergugat').hide();
-		$('select#kelurahan-tergugat').hide();
-		$('.gaib').show();
-
-		panggilan_penggugat = 3;
-		panggilan_tergugat = 2;
-		adm = 130000;
-		pip = 30000;
-		tot_tergugat = panggilan_tergugat*60000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('#biaya-pip').text(format_duit(pip));
-		$("td#biaya-tergugat").text(format_duit(60000));
-		$("td#total-tergugat").text(format_duit(tot_tergugat));
-		$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
-		break;
-
-		case "dispensasi nikah":
-		$('#tr-pip').hide();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').hide();
-		$('#tr-skum').show();
-		$('#pelapor').text("Pemohon I");
-		$('#terlapor').text("Pemohon II");
-		$('#judul-perkara').text(this.value);
-		panggilan_penggugat = 2;
-		panggilan_tergugat = 2;
-		adm = 120000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('select#kecamatan-penggugat').prop('disabled', false);
-		$('select#kecamatan-tergugat').prop('disabled', false);
-		break;
-
-		case "isbat nikah":
-		$('#tr-pip').hide();
-		$('#tr-admin').show();
-		$('#tr-pengumuman').show();
-		$('#tr-skum').show();
-		$('#pelapor').text("Pemohon I");
-		$('#terlapor').text("Pemohon II");
-		$('#judul-perkara').text(this.value);
-		panggilan_penggugat = 2;
-		panggilan_tergugat = 2;
-		adm = 120000;
-		pengumuman = 60000;
-		$('#panggilan-penggugat').text(panggilan_penggugat);
-		$('#panggilan-tergugat').text(panggilan_tergugat);
-		$('#biaya-adm').text(format_duit(adm));
-		$('#biaya-pengumuman').text(format_duit(pengumuman));
-		$('select#kecamatan-penggugat').prop('disabled', false);
-		$('select#kecamatan-tergugat').prop('disabled', false);
-		break;
-
-		default :
-		$('select#kecamatan-penggugat').prop('disabled', 'disabled');
-		$('select#kecamatan-tergugat').prop('disabled', 'disabled');
-		break;
+	const lokasi = selectLokasi.find(":selected").val();		
+	if(lokasi=='wasu')
+	{
+		alert('Silahkan pilih lokasi sidang terlebih dahulu');
+		pukung(tabel)
+	}
+	else if(lokasi=='wkwk')
+	{
+		alert('Gagal mengambil data, silahkan refresh halaman');
+		pukung(tabel);
+	}
+	else
+	{
+		tampil(tabel);
+		tot_penggugat = 0;
+		tot_tergugat = 0;
+		adm = 0;
+		total_biaya = 0;
+		panggilan_penggugat = 0;
+		panggilan_tergugat = 0;
+		pip = 0;
+		pengumuman = 0;
+		ghaib = 0;
+		perkara = this.value;
+		ongkir_p = 0;
+		ongkir_t = 0;
+		pengembalian_p = 0;
+		pengembalian_t = 0;
+		$("select#kecamatan-penggugat").val($("option:first", this).val());
+		$("select#kecamatan-tergugat").val($("option:first", this).val());
+		$("select#kelurahan-penggugat").empty();
+		$("select#kelurahan-penggugat").append("<option value=>--Pilih Kecamatan Dahulu--</option>");
+		$("select#kelurahan-tergugat").empty();
+		$("select#kelurahan-tergugat").append("<option value=>--Pilih Kecamatan Dahulu--</option>");
+		$("td#panggilan-penggugat").empty();
+		$("td#panggilan-tergugat").empty();
+		$("td#biaya-penggugat").empty();
+		$("td#biaya-tergugat").empty();
+		$("td#total-penggugat").empty();
+		$("td#total-tergugat").empty();
+		$("td#biaya-pip").empty();
+		$("td#biaya-adm").empty();
+		$("td#biaya-pengumuman").empty();
+		$("td#total-biaya").empty();
+		$('select#kecamatan-tergugat').show();
+		$('select#kelurahan-tergugat').show();
+		$('.gaib').hide();
+		$("option[value='0']").remove();
+		$("input[name='biaya-ongkir-p']").val('');
+		$("input[name='biaya-ongkir-t']").val('');
+		$("input[name='biaya-pengembalian-p']").val('');
+		$("input[name='biaya-pengembalian-t']").val('');
+		$('.lainnya-p').hide();
+		$('.lainnya-t').hide();
+		// if (this.value == "") {
+		// 	$('#tabel-perkara').hide();
+		// }else{
+		// 	$('#tabel-perkara').show();
+		// }		
+	
+		switch(this.value){
+			case "cerai gugat":
+			$('#tr-pip').hide();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').hide();
+			$('#tr-skum').show();
+			$('#pelapor').text("Penggugat");
+			$('#terlapor').text("Tergugat");
+			$('#judul-perkara').text(this.value);
+			panggilan_penggugat = 2;
+			panggilan_tergugat = 3;
+			adm = 155000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);			
+			if(lokasi==1)
+			{
+				$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+			}
+			$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
+			break;
+	
+			case "cerai gugat ghaib":
+			$('#tr-pip').show();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').hide();
+			$('#tr-skum').show();
+			$('#pelapor').text("Penggugat");
+			$('#terlapor').text("Tergugat");
+			$('#judul-perkara').text(this.value);			
+			$('select#kecamatan-tergugat').hide();
+			$('select#kelurahan-tergugat').hide();
+			$('.gaib').show();
+	
+			panggilan_penggugat = 2;
+			panggilan_tergugat = 2;
+			adm = 155000;
+			pip = 30000;
+			tot_tergugat = panggilan_tergugat*60000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('#biaya-pip').text(format_duit(pip));
+			$("td#biaya-tergugat").text(format_duit(60000));
+			$("td#total-tergugat").text(format_duit(tot_tergugat));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);
+			if(lokasi==1)
+			{
+				$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+			}
+			break;
+	
+			case "cerai talak":
+			$('#tr-pip').hide();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').hide();
+			$('#tr-skum').show();
+			$('#pelapor').text("Pemohon");
+			$('#terlapor').text("Termohon");
+			$('#judul-perkara').text(this.value);
+			panggilan_penggugat = 3;
+			panggilan_tergugat = 4;
+			adm = 155000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);
+			if(lokasi==1)
+			{
+				$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+			}
+			$("select#kecamatan-tergugat").append("<option value='0'>Lainnya</option>");
+			break;
+	
+			case "cerai talak ghaib":
+			$('#tr-pip').show();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').hide();
+			$('#tr-skum').show();
+			$('#pelapor').text("Pemohon");
+			$('#terlapor').text("Termohon");
+			$('#judul-perkara').text(this.value);
+			$('select#kecamatan-tergugat').hide();
+			$('select#kelurahan-tergugat').hide();
+			$('.gaib').show();
+	
+			panggilan_penggugat = 3;
+			panggilan_tergugat = 2;
+			adm = 155000;
+			pip = 30000;
+			tot_tergugat = panggilan_tergugat*60000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('#biaya-pip').text(format_duit(pip));
+			$("td#biaya-tergugat").text(format_duit(60000));
+			$("td#total-tergugat").text(format_duit(tot_tergugat));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);
+			if(lokasi==1)
+			{
+				$("select#kecamatan-penggugat").append("<option value='0'>Lainnya</option>");
+			}
+			break;
+	
+			case "dispensasi nikah":
+			$('#tr-pip').hide();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').hide();
+			$('#tr-skum').show();
+			$('#pelapor').text("Pemohon I");
+			$('#terlapor').text("Pemohon II");
+			$('#judul-perkara').text(this.value);
+			panggilan_penggugat = 2;
+			panggilan_tergugat = 2;
+			// adm sebelumnya 120k
+			adm = 155000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);
+			break;
+	
+			case "isbat nikah":
+			$('#tr-pip').hide();
+			$('#tr-admin').show();
+			$('#tr-pengumuman').show();
+			$('#tr-skum').show();
+			$('#pelapor').text("Pemohon I");
+			$('#terlapor').text("Pemohon II");
+			$('#judul-perkara').text(this.value);
+			panggilan_penggugat = 2;
+			panggilan_tergugat = 2;
+			// adm sebelumnya 120k
+			adm = 155000;
+			pengumuman = 60000;
+			$('#panggilan-penggugat').text(panggilan_penggugat);
+			$('#panggilan-tergugat').text(panggilan_tergugat);
+			$('#biaya-adm').text(format_duit(adm));
+			$('#biaya-pengumuman').text(format_duit(pengumuman));
+			$('select#kecamatan-penggugat').prop('disabled', false);
+			$('select#kecamatan-tergugat').prop('disabled', false);
+			break;
+	
+			default :
+			$('select#kecamatan-penggugat').prop('disabled', 'disabled');
+			$('select#kecamatan-tergugat').prop('disabled', 'disabled');
+			break;
+		}
 	}
 });
 
 $('select#kecamatan-penggugat').on('change', function(){
 	var id_kecamatan_penggugat = this.value;
+	const lokasi = selectLokasi.find(":selected").val();
 	if(this.value!="" && this.value!=0){
 		$('.lainnya-p').hide();
 		ongkir_p = 0;
@@ -260,6 +399,7 @@ $('select#kecamatan-penggugat').on('change', function(){
 			type: 'post',
 			data: {
 				id: id_kecamatan_penggugat,
+				lokasi:lokasi
 			},
 			dataType: 'json',
 			success: function(respon){
@@ -301,6 +441,7 @@ $('select#kecamatan-penggugat').on('change', function(){
 });
 
 $('select#kecamatan-tergugat').on('change', function(){
+	const lokasi = selectLokasi.find(":selected").val();
 	if (this.value!="" && this.value!=0) {
 		$('.lainnya-t').hide();
 		$("td#total-biaya").empty();
@@ -312,6 +453,7 @@ $('select#kecamatan-tergugat').on('change', function(){
 			type: 'post',
 			data: {
 				id: this.value,
+				lokasi: lokasi
 			},
 			dataType: 'json',
 			success: function(respon){
@@ -524,6 +666,8 @@ function format_duit(bilangan){
 
 $(document).ready(function(){
 	var tkn,nama_pa,nama_pa_pendek;
+	pukung(selectPerkara,'perkara');
+	pukung(tabel);
 	$.ajax({
 		url: base_url+"perkara/get_token",
 		method: "GET",

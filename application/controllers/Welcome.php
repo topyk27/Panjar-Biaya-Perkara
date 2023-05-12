@@ -21,8 +21,10 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('M_statistik');
+		$this->load->model('M_perkara');
 		$this->M_statistik->addStatistik();
-		$data = $this->M_statistik->getStat();
+		$data['statistik'] = $this->M_statistik->getStat();
+		$data['lokasi'] = $this->M_perkara->getLokasi();
 		$this->load->view('welcome',$data);
-	}
+	}	
 }

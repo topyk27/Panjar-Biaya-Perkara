@@ -14,6 +14,20 @@
 
 		<form>
 			<div class="form-group">
+				<label for="lokasi">Lokasi Sidang</label>
+				<select name="lokasi" id="lokasi" class="form-control kapital-each-word" required>
+					<option value="wasu">--Silahkan Pilih Lokasi Sidang--</option>					
+					<?php if($lokasi['success'] == 1) : ?>
+						<?php foreach($lokasi['lokasi'] as $key) : ?>
+							<option value="<?php echo $key->id; ?>"><?php echo $key->nama; ?></option>
+						<?php endforeach; ?>
+						<?php $konek = 1; ?>
+					<?php else : ?>
+						<?php $konek = 0; ?>
+					<?php endif; ?>
+				</select>
+			</div>
+			<div class="form-group">
 				<label for="perkara">Perkara</label>
 				<select class="form-control kapital-each-word" id="perkara" required="">
 					<option value="">--Silahkan Pilih Perkara--</option>
@@ -28,7 +42,7 @@
 						<th scope="col" colspan="6" id="judul-perkara" class="kapital text-tengah">Judul Perkara</th>
 					</tr>
 					<tr class="text-tengah">
-						<th scope="col">Pelapor</th>
+						<th scope="col">Pihak</th>
 						<th scope="col">Kecamatan</th>
 						<th scope="col">Kelurahan</th>
 						<th scope="col">Jumlah Panggilan</th>
@@ -135,11 +149,9 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td><?php echo $today; ?></td>
-									<td><?php echo $yesterday; ?></td>
-									<td><?php echo $sevenDays; ?></td>
-									<td><?php echo $month; ?></td>
-									<td><?php echo $year; ?></td>
+									<?php foreach($statistik as $item) : ?>
+										<td><?php echo $item; ?></td>									
+									<?php endforeach; ?>
 								</tr>
 							</tbody>
 						</table>
@@ -152,7 +164,7 @@
 <script src="<?php echo base_url('asset/js/jquery-3.3.1.min.js'); ?>"></script>
 
 <script src="<?php echo base_url('asset/bootstrap-4.0.0-dist/js/bootstrap.min.js'); ?>"></script>
-<script>const base_url = "<?php echo base_url(); ?>";</script>
+<script>const base_url = "<?php echo base_url(); ?>"; const konek = <?php echo $konek; ?>; if(!konek){const lokasi = document.getElementById('lokasi'); lokasi.innerHTML = "<option value='wkwk'>Gagal mendapatkan data lokasi</option>";}</script>
 <script src="<?php echo base_url('asset/js/index.js?').time(); ?>"></script>
 </body>
 </html>

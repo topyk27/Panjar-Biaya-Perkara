@@ -21,9 +21,26 @@ class M_perkara extends CI_Model
 
     public function get_kecamatan()
     {
-        $this->db->from("kecamatan");
-        $this->db->order_by("kecamatan","ASC");
-        $query = $this->db->get();
+        $post = $this->input->post();
+        // return $post['lokasi'];
+        if(!empty($post['lokasi']))
+        {            
+            $lokasi = $post['lokasi'];
+            if($lokasi!=1)
+            {
+                $query = $this->db->query("SELECT * FROM kecamatan WHERE id IN (SELECT kecamatan_id FROM kantor_kecamatan WHERE kantor_id = $lokasi) ORDER BY kecamatan ASC");
+            }
+            else
+            {
+                $query = $this->db->query("SELECT * FROM kecamatan WHERE id NOT IN (SELECT kecamatan_id FROM kantor_kecamatan WHERE kantor_id = $lokasi) ORDER BY kecamatan ASC");
+            }
+        }
+        else
+        {
+            $this->db->from("kecamatan");            
+            $this->db->order_by("kecamatan","ASC");
+            $query = $this->db->get();
+        }
         if($query->num_rows() > 0)
         {
             $data['success'] = 1;
@@ -33,6 +50,7 @@ class M_perkara extends CI_Model
             $data['success'] = 0;
         }
         $data['kecamatan'] = $query->result();
+        // return $this->db->last_query();
         return $data;
     }
 
@@ -40,19 +58,35 @@ class M_perkara extends CI_Model
     {
         $post = $this->input->post();
         $id = $post['id'];
+        $lokasi = $post['lokasi'];
         $this->db->from("radius");
         $this->db->where("kecamatan",$id);
+        $this->db->where("kantor_id",$lokasi);
         $this->db->order_by("kelurahan","ASC");
         $query = $this->db->get();
         if($query->num_rows() > 0)
         {
             $data['success'] = 1;
+            $data['kelurahan'] = $query->result();
         }
         else
         {
-            $data['success'] = 0;
-        }
-        $data['kelurahan'] = $query->result();
+            // $data['success'] = 0;
+            $this->db->from("radius");
+            $this->db->where("kecamatan",$id);
+            $this->db->where("kantor_id",1);
+            $this->db->order_by("kelurahan","ASC");
+            $query2 = $this->db->get();
+            if($query2->num_rows() > 0)
+            {
+                $data['success'] = 1;
+            }
+            else
+            {
+                $data['success'] = 0;
+            }
+            $data['kelurahan'] = $query2->result();
+        }        
         return $data;
     }
 
@@ -88,6 +122,21 @@ class M_perkara extends CI_Model
         {
             $data['success'] = 0;
         }
+        return $data;
+    }
+
+    public function getLokasi()
+    {    
+        $query = $this->db->get_where('kantor',array('aktif' => 1));        
+        if($query->num_rows() > 0)
+        {
+            $data['success'] = 1;
+        }
+        else
+        {
+            $data['success'] = 0;
+        }
+        $data['lokasi'] = $query->result();
         return $data;
     }
 }
